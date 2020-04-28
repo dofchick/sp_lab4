@@ -1,10 +1,12 @@
 #include <iostream>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <fstream>
 using namespace std;
-int main()
-{
+ofstream out;
+int main() {
     int new_prcs;
+    int st, pid;
     int mtr[3][3] =
     {
         {2,4,0},
@@ -19,19 +21,24 @@ int main()
         new_prcs = fork();
         if (new_prcs>0)
         {
-            int st;
-            waitpid (new_prcs, &st, 0);
+		waitpid(new_prcs, &st, 0);
         }
         else
         {
+	    out.open("buff");
             for (int j=0; j<3; j++)
             {
-                c = mtr[i][j] * vkt[j];
-                sum = sum+c;
+                out << vkt[j] <<  endl;
             }
-            cout<<sum<<endl;
-            sum=0;
+	    for (int j=0; j<3; j++)
+	    {
+		out << mtr[i][j] << endl;
+	    }
+	    out.close();
+            execl("vek","buff",NULL);
             exit(0);
         }
     }
+    sleep(1);
 }
+
